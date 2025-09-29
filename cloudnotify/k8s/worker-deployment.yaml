@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: gcr.io/YOUR_PROJECT_ID/cloudnotify-worker:latest
+        image: gcr.io/PROJECT_ID/cloudnotify-worker:latest
         env:
         - name: SENDGRID_API_KEY
           valueFrom:
@@ -33,3 +33,22 @@ spec:
               key: token
         - name: TWILIO_FROM
           value: "+1234567890"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+        livenessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - "pgrep node"
+          initialDelaySeconds: 10
+          periodSeconds: 20

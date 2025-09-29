@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: gcr.io/YOUR_PROJECT_ID/cloudnotify-api:latest
+        image: gcr.io/PROJECT_ID/cloudnotify-api:latest
         ports:
         - containerPort: 3000
         env:
@@ -23,3 +23,26 @@ spec:
             secretKeyRef:
               name: jwt-secret
               key: secret
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 20
