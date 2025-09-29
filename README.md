@@ -11,3 +11,5 @@ Kubernetes manifests with resource limits, security context, and health probes.
 Infrastructure-as-Code via Terraform for GCP resources.
 CI/CD pipeline for automated deployment to Google Kubernetes Engine (GKE).
 Documentation for architecture, API usage, and setup.
+
+CloudNotify is built by TALENTS in cloud engineering, focusing on best practices for security, reliability, and maintainability.
