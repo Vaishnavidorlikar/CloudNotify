@@ -1,0 +1,26 @@
+name: Deploy to GKE
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+    - name: Build and Push Docker Images
+      run: |
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudnotify-api ./api
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudnotify-worker ./worker
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudnotify-api
+        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudnotify-worker
+    - name: Deploy to GKE
+      run: |
+        gcloud container clusters get-credentials cloudnotify-cluster --zone us-central1-a
+        kubectl apply -f k8s/
